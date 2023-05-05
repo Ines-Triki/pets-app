@@ -1,8 +1,13 @@
-import Express  from "express";
-import mysql from "mysql";
-const app = Express();
-app.use(Express.json())
-const db = mysql.createConnection({
+const connection=require("mysql2")
+const express=require("express") ;
+const cors = require("cors");
+
+const app = express();
+app.use(express.json())
+
+app.use(cors())
+
+const db = connection.createConnection({
     host: "localhost",
     user: "root",
     password: "23647619rbk",
@@ -34,7 +39,7 @@ return res.send(data)
          
          db.query(q, [values], (err, data) => {
             if (err) return res.send(err);
-            return res.json(data);
+            return res.json("created");
           });
         });
         
@@ -48,15 +53,26 @@ return res.send(data)
                 return res.json(data);
         })
     })
-     app.put("/pets/:petsid", (req, res) => {
-      const petsid = req.params.petsid
-      const q= "Update pets set `name`=?,`type`=?,`description`=? where id=?"
-      const values = [req.body.name, req.body.type, req.body.description, ]
-      db.query(q, [values, petsid], (err, data) => {
-        if (err) return res.send(err);
-        return res.json(data);
-      });
-})
+     
+   
+
+
+app.put("/pets/:id", (req, res) => {
+    const petsid = req.params.id;
+    const q = "UPDATE petss SET `name`= ?, `type`= ?, `description`= ?";
+  
+    const values = [
+      req.body.name,
+      req.body.type, 
+      req.body.description,
+    ];
+  
+    db.query(q, [...values,petsid], (err, data) => {
+      if (err) return res.send(err);
+      return res.json(data);
+    });
+  });
+  
 app.listen(3000,()=>{
     console.log('listening on');
 })
